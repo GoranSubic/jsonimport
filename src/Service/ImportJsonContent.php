@@ -15,9 +15,9 @@ class ImportJsonContent
 
   public function todosToDb($url, &$messageArray): bool
   {
+    $json = [];
 
     if (!empty($url)) {
-      //call api
       $json = file_get_contents($url);
       $json = json_decode($json, TRUE);
     }
@@ -29,32 +29,30 @@ class ImportJsonContent
       $stmtSelect = $this->entityManager->getConnection()->prepare($sqlSelect);
       $s = $stmtSelect->execute(['title' => $toDo])->fetchAssociative();
 
+      $queryFor = '';
       if (!empty($s) && !empty($s['id'])) {
+        $queryFor = 'update';
         $messageArray['existing_todo'][] = $s['title'];
 
         $sql = "UPDATE to_dos SET user_id=:user_id, title=:title, completed=:completed";
         $sql .= " WHERE (id = :iid)";
-        $stmt = $this->entityManager->getConnection()->prepare($sql);
-        $r = $stmt->execute([
-          'user_id' => !empty($getData['userId']) ? (int)$getData['userId'] : '',
-          'title' => !empty($getData['title']) ? $getData['title'] : ' UPDATED empty ',
-          'completed' => !empty($getData['completed']) && $getData['completed'] == TRUE ? 1 : 0,
-          'iid' => $s['id'],
-        ]);
-
-        if (!$r) $messageArray['skipped_todo'][] = !empty($toDo) ? $toDo : 'empty title';
       } else {
+        $queryFor = 'insert';
+
         $sql = "INSERT INTO to_dos (user_id, title, completed) 
           VALUES (:user_id, :title, :completed)";
-        $stmt = $this->entityManager->getConnection()->prepare($sql);
-        $r = $stmt->execute([
-          'user_id' => !empty($getData['userId']) ? (int)$getData['userId'] : '',
-          'title' => !empty($getData['title']) ? $getData['title'] : '',
-          'completed' => !empty($getData['completed']) && $getData['completed'] == TRUE ? 1 : 0,
-        ]);
-
-        if (!$r) $messageArray['skipped_todo'][] = !empty($toDo) ? $toDo : 'empty title';
       }
+
+      $stmt = $this->entityManager->getConnection()->prepare($sql);
+      $params = [
+        'user_id' => !empty($getData['userId']) ? (int)$getData['userId'] : '',
+        'title' => !empty($getData['title']) ? $getData['title'] : ' UPDATED empty ',
+        'completed' => !empty($getData['completed']) && $getData['completed'] == TRUE ? 1 : 0,
+      ];
+      if ($queryFor === 'update') $params['iid'] = !empty($s) && !empty($s['id']) ? $s['id'] : NULL;
+      $r = $stmt->execute($params);
+
+      if (!$r) $messageArray['skipped_todo'][] = !empty($toDo) ? $toDo : 'empty title';
     }
 
     return TRUE;
