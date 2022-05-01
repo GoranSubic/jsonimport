@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
+use App\Service;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ImportJsonContent
+class ImportJsonContent implements ImportServiceInterface
 {
   protected $entityManager;
 
@@ -13,14 +14,23 @@ class ImportJsonContent
     $this->entityManager = $entityManager;
   }
 
-  public function todosToDb($url, &$messageArray): bool
+  public function execute(string $url, array $messages): bool
   {
     $json = [];
 
     if (!empty($url)) {
       $json = file_get_contents($url);
-      $json = json_decode($json, TRUE);
+      $messages = $this->savesToDb($json);
+      return TRUE;
     }
+
+    return FALSE;
+  }
+
+  public function savesToDb(string $json): array
+  {
+    $json = json_decode($json, TRUE);
+    $messageArray = [];
 
     foreach ($json as $getData) {
       $toDo = !empty($getData['title']) ? $getData['title'] : '';
@@ -55,6 +65,6 @@ class ImportJsonContent
       if (!$r) $messageArray['skipped_todo'][] = !empty($toDo) ? $toDo : 'empty title';
     }
 
-    return TRUE;
+    return $messageArray;
   }
 }

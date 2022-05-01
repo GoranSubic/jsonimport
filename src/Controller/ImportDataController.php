@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Service\ExportJsonContent;
-use App\Service\ImportJsonContent;
+use App\Service\ExportServiceInterface;
+use App\Service\ImportServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,14 +11,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class ImportDataController extends AbstractController
 {
     #[Route('/', name: 'app_import_data')]
-    public function index(ImportJsonContent $importJsonContent, ExportJsonContent $exportJsonContent): Response
+    public function index(ImportServiceInterface $importJsonContent, ExportServiceInterface $exportJsonContent): Response
     {
         $url = "https://jsonplaceholder.typicode.com/todos";
 
         $messageArray = [];
-        $importToDos = $importJsonContent->todosToDb($url, $messageArray);
+        $importToDos = $importJsonContent->execute($url, $messageArray);
 
-        $json = $exportJsonContent->todosFromDb();
+        $json = $exportJsonContent->execute('title', 'ASC');
 
         $response = new Response();
         $response->setContent($json);

@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Repository\ToDosRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ExportJsonContent
+class ExportJsonContent implements ExportServiceInterface
 {
   protected $entityManager;
 
@@ -16,10 +16,10 @@ class ExportJsonContent
     $this->entityManager = $entityManager;
     $this->toDosRepository = $toDosRepository;
   }
-
-  public function todosFromDb(): string
+  
+  public function execute(string $orderBy, string $direction): string
   {
-    $allToDos = $this->toDosRepository->findBy([], ['title' => 'ASC']);
+    $allToDos = $this->toDosRepository->findBy([], [$orderBy => $direction]);
     $json = json_encode($allToDos, JSON_PRETTY_PRINT);
 
     return $json;
