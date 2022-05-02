@@ -2,29 +2,51 @@
 
 namespace App\Controller;
 
+use App\Form\WorldcupType;
 use App\Service\Todos\ExportServiceInterface;
 use App\Service\Todos\ImportServiceInterface;
 use App\Service\Worldcup\Matches\MExportContent;
 use App\Service\Worldcup\Matches\MImportContent;
 use App\Service\Worldcup\Results\RExportContent;
-use App\Service\Worldcup\Results\RImportContent;
+use App\Service\Worldcup\Teams\TExportContent;
+use App\Service\Worldcup\Teams\TImportContent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ImportDataController extends AbstractController
 {
-    #[Route('/worldcup/teams/results', name: 'app_import_data_results')]
-    public function results(RImportContent $importJsonContent, RExportContent $exportJsonContent): Response
+    #[Route('/worldcup', name: 'app_import_data_imports')]
+    public function imports(
+        Request $request,
+        TImportContent $teamImportJsonContent, MImportContent $mImportContent
+        ): Response
     {
-        $url = "http://worldcup.sfg.io/teams/results";
 
-        $importResults = $importJsonContent->execute($url);
+        $form = $this->createForm(WorldcupType::class);
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
 
+            $urlTeams = "http://worldcup.sfg.io/teams";
+            $importTeams = $teamImportJsonContent->execute($urlTeams);
 
+            // $urlMatches = "http://worldcup.sfg.io/matches";
+            // $importMatches = $mImportContent->execute($urlMatches);
 
-        $json = $exportJsonContent->execute('title', 'ASC');
+            return $this->redirectToRoute('app_import_data_teams_results');
+        }
+
+        return $this->renderForm('worldcup_import/json_import.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/worldcup/teams/results', name: 'app_import_data_teams_results')]
+    public function results(RExportContent $rExportContent): Response
+    {
+        $json = $rExportContent->execute('teamId', 'ASC');
 
         $response = new Response();
         $response->setContent($json);
@@ -36,13 +58,6 @@ class ImportDataController extends AbstractController
     #[Route('/worldcup/matches', name: 'app_import_data_matches')]
     public function matches(MImportContent $importJsonContent, MExportContent $exportJsonContent): Response
     {
-        $url = "http://worldcup.sfg.io/matches";
-
-        $importMatches = $importJsonContent->execute($url);
-
-
-
-
         $json = $exportJsonContent->execute('title', 'ASC');
 
         $response = new Response();
