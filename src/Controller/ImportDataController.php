@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Service\ExportServiceInterface;
-use App\Service\ImportServiceInterface;
+use App\Service\Todos\ExportServiceInterface;
+use App\Service\Todos\ImportServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

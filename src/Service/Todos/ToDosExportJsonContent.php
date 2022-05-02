@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Todos;
 
 use App\Repository\ToDosRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ExportJsonContent implements ExportServiceInterface
+class ToDosExportJsonContent
 {
   protected $entityManager;
 

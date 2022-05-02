@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Todos;
 
-use App\Service;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ImportJsonContent implements ImportServiceInterface
+class ToDosImportJsonContent
 {
   protected $entityManager;
 
@@ -14,7 +13,7 @@ class ImportJsonContent implements ImportServiceInterface
     $this->entityManager = $entityManager;
   }
 
-  public function execute(string $url, array $messages): bool
+  public function execute(string $url, array &$messages): bool
   {
     $json = [];
 
