@@ -32,8 +32,8 @@ class ImportDataController extends AbstractController
             $urlTeams = "http://worldcup.sfg.io/teams";
             $importTeams = $teamImportJsonContent->execute($urlTeams);
 
-            // $urlMatches = "http://worldcup.sfg.io/matches";
-            // $importMatches = $mImportContent->execute($urlMatches);
+            $urlMatches = "http://worldcup.sfg.io/matches";
+            $importMatches = $mImportContent->execute($urlMatches);
 
             return $this->redirectToRoute('app_import_data_teams_results');
         }
