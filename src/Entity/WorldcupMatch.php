@@ -6,9 +6,10 @@ use App\Repository\WorldcupMatchRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: WorldcupMatchRepository::class)]
-class WorldcupMatch
+class WorldcupMatch implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -87,6 +88,33 @@ class WorldcupMatch
         $this->awayTeamEvents = new ArrayCollection();
     }
 
+    public function jsonSerialize(): array
+    {
+        return [
+            'venue' => $this->getVenue(),
+            'location' => $this->getLocation(),
+            'status' => $this->getStatus(),
+            'time' => $this->getTime(),
+            'fifa_id' => $this->getFifaId(),
+            'weather' => $this->getWeather(),
+            'attendance' => $this->getAttendance(),
+            'officials' => $this->getOfficials(),
+            'stage_name' => $this->getStageName(),
+            'home_team_country' => $this->getHomeTeamCountry(),
+            'away_team_country' => $this->getAwayTeamCountry(),
+            'datetime' => $this->getDatetime()->format('Y-m-d\TH:i:s\Z'),
+            'winner' => $this->getWinner(),
+            'winner_code' => $this->getWinnerCode(),
+            'home_team' => $this->getHomeTeam(),
+            'away_team' => $this->getAwayTeam(),
+            'home_team_events' => $this->getHomeTeamEvents()->toArray(),
+            'away_team_events' => $this->getAwayTeamEvents()->toArray(),
+            'home_team_statistics' => $this->getHomeTeamStatistics(),
+            'away_team_statistics' => $this->getAwayTeamStatistics(),
+            'last_event_update_at' => $this->getLastEventUpdateAt()->format('Y-m-d\TH:i:s\Z'),
+            'last_score_update_at' => $this->getlastScoreUpdateAt()->format('Y-m-d\TH:i:s\Z'),
+        ];
+    }
     public function getId(): ?int
     {
         return $this->id;

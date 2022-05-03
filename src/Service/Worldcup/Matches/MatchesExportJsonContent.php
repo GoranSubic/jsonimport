@@ -3,25 +3,28 @@
 namespace App\Service\Worldcup\Matches;
 
 use App\Repository\ToDosRepository;
+use App\Repository\WorldcupMatchRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MatchesExportJsonContent
 {
   protected $entityManager;
 
-  protected $toDosRepository;
+  protected $worldcupMatchRepository;
 
-  public function __construct(EntityManagerInterface $entityManager, ToDosRepository $toDosRepository)
+  public function __construct(EntityManagerInterface $entityManager, WorldcupMatchRepository $worldcupMatchRepository)
   {
     $this->entityManager = $entityManager;
-    $this->toDosRepository = $toDosRepository;
+    $this->worldcupMatchRepository = $worldcupMatchRepository;
   }
   
-  public function execute(string $orderBy, string $direction): string
+  public function execute(string $orderBy = 'id', string $direction = 'ASC'): string
   {
-    // Todo export data
-    // $allToDos = $this->toDosRepository->findBy([], [$orderBy => $direction]);
-    $allMatches = [];
+    if ($orderBy != 'weather_temp_celsius') {
+      $allMatches = $this->worldcupMatchRepository->findBy([], [$orderBy => $direction]);
+    } else {
+      $allMatches = $this->worldcupMatchRepository->findAllMatchesByTemperature($direction);
+    }
     $json = json_encode($allMatches, JSON_PRETTY_PRINT);
 
     return $json;

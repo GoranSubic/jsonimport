@@ -4,9 +4,10 @@ namespace App\Entity;
 
 use App\Repository\TeamEventRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: TeamEventRepository::class)]
-class TeamEvent
+class TeamEvent implements JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -116,5 +117,15 @@ class TeamEvent
         $this->worldcupMatchAway = $worldcupMatchAway;
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getEventId(),
+            'type_of_event' => $this->getTypeOfEvent(),
+            'player' => $this->getPlayer(),
+            'time' => $this->getTime(),
+        ];
     }
 }

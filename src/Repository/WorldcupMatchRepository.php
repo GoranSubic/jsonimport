@@ -47,6 +47,20 @@ class WorldcupMatchRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @param string $direction
+     * 
+     * @return WorldcupMatch[] Returns an array of WorldcupMatch objects
+     */
+    public function findAllMatchesByTemperature(string $direction = 'ASC')
+    {
+        return $this->createQueryBuilder('w')
+            ->orderBy('w.weather.tempCelsius', $direction)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return WorldcupMatch[] Returns an array of WorldcupMatch objects
     //  */

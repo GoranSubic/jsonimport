@@ -8,7 +8,6 @@ use App\Service\Todos\ImportServiceInterface;
 use App\Service\Worldcup\Matches\MExportContent;
 use App\Service\Worldcup\Matches\MImportContent;
 use App\Service\Worldcup\Results\RExportContent;
-use App\Service\Worldcup\Teams\TExportContent;
 use App\Service\Worldcup\Teams\TImportContent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +19,7 @@ class ImportDataController extends AbstractController
     #[Route('/worldcup', name: 'app_import_data_imports')]
     public function imports(
         Request $request,
-        TImportContent $teamImportJsonContent, MImportContent $mImportContent
+        TImportContent $teamImportJsonContent, MImportContent $matchImportContent
         ): Response
     {
 
@@ -33,9 +32,9 @@ class ImportDataController extends AbstractController
             $importTeams = $teamImportJsonContent->execute($urlTeams);
 
             $urlMatches = "http://worldcup.sfg.io/matches";
-            $importMatches = $mImportContent->execute($urlMatches);
+            $importMatches = $matchImportContent->execute($urlMatches);
 
-            return $this->redirectToRoute('app_import_data_teams_results');
+            return $this->redirectToRoute('app_export_data_matches');
         }
 
         return $this->renderForm('worldcup_import/json_import.html.twig', [
@@ -43,7 +42,7 @@ class ImportDataController extends AbstractController
         ]);
     }
 
-    #[Route('/worldcup/teams/results', name: 'app_import_data_teams_results')]
+    #[Route('/worldcup/teams/results', name: 'app_export_data_teams_results')]
     public function results(RExportContent $rExportContent): Response
     {
         $json = $rExportContent->execute('teamId', 'ASC');
@@ -55,10 +54,10 @@ class ImportDataController extends AbstractController
         return $response;
     }
 
-    #[Route('/worldcup/matches', name: 'app_import_data_matches')]
-    public function matches(MImportContent $importJsonContent, MExportContent $exportJsonContent): Response
+    #[Route('/worldcup/matches', name: 'app_export_data_matches')]
+    public function matches(MExportContent $exportJsonContent): Response
     {
-        $json = $exportJsonContent->execute('title', 'ASC');
+        $json = $exportJsonContent->execute('weather_temp_celsius', 'ASC');
 
         $response = new Response();
         $response->setContent($json);
