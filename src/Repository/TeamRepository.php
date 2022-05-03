@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Team;
+use App\Entity\WorldcupMatch;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -45,6 +46,29 @@ class TeamRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+
+    /**
+     * @return Team[] Returns an array of Team objects
+     */
+    public function findTeamResults()
+    {
+        return $this->createQueryBuilder('t')
+            ->select(
+                't.teamId as id, t.country, t.alternateName, t.fifaCode, t.groupId, t.groupLetter'
+            )
+            ->addSelect('COUNT(wcmwins.winner) as wins')
+            // ->addSelect('COUNT(wcma.awayTeamCountry) as games_played')
+
+            ->leftJoin('App\Entity\WorldcupMatch', 'wcmwins', 'WITH', 't.country = wcmwins.winner')
+            // ->leftJoin('App\Entity\WorldcupMatch', 'wcma', 'WITH', 't.country = wcma.homeTeamCountry OR t.country = wcma.awayTeamCountry', )
+            
+            ->groupBy('t.teamId')
+            ->orderBy('t.teamId', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
     }
 
     // /**

@@ -20,10 +20,9 @@ class ResultsExportJsonContent
   
   public function execute(string $orderBy, string $direction): string
   {
-    // Todo export data
-    $allMatches = $this->teamRepository->findBy([], [$orderBy => $direction]);
-    // $allMatches = [];
-    $json = json_encode($allMatches, JSON_PRETTY_PRINT);
+    // $allTeams = $this->teamRepository->findBy([], [$orderBy => $direction]);
+    $allTeams = $this->teamRepository->findTeamResults();
+    $json = json_encode($allTeams, JSON_PRETTY_PRINT);
 
     return $json;
   }

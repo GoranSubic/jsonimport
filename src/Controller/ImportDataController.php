@@ -34,7 +34,7 @@ class ImportDataController extends AbstractController
             $urlMatches = "http://worldcup.sfg.io/matches";
             $importMatches = $matchImportContent->execute($urlMatches);
 
-            return $this->redirectToRoute('app_export_data_matches');
+            return $this->redirectToRoute('app_export_data_teams_results');
         }
 
         return $this->renderForm('worldcup_import/json_import.html.twig', [
@@ -43,9 +43,9 @@ class ImportDataController extends AbstractController
     }
 
     #[Route('/worldcup/teams/results', name: 'app_export_data_teams_results')]
-    public function results(RExportContent $rExportContent): Response
+    public function results(RExportContent $resultExportContent): Response
     {
-        $json = $rExportContent->execute('teamId', 'ASC');
+        $json = $resultExportContent->execute('teamId', 'ASC');
 
         $response = new Response();
         $response->setContent($json);
