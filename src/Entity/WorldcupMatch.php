@@ -102,7 +102,7 @@ class WorldcupMatch implements JsonSerializable
             'stage_name' => $this->getStageName(),
             'home_team_country' => $this->getHomeTeamCountry(),
             'away_team_country' => $this->getAwayTeamCountry(),
-            'datetime' => $this->getDatetime()->format('Y-m-d\TH:i:s\Z'),
+            'datetime' => !empty($this->getDatetime()) ? $this->getDatetime()->format('Y-m-d\TH:i:s\Z') : NULL,
             'winner' => $this->getWinner(),
             'winner_code' => $this->getWinnerCode(),
             'home_team' => $this->getHomeTeam(),
@@ -111,8 +111,8 @@ class WorldcupMatch implements JsonSerializable
             'away_team_events' => $this->getAwayTeamEvents()->toArray(),
             'home_team_statistics' => $this->getHomeTeamStatistics(),
             'away_team_statistics' => $this->getAwayTeamStatistics(),
-            'last_event_update_at' => $this->getLastEventUpdateAt()->format('Y-m-d\TH:i:s\Z'),
-            'last_score_update_at' => $this->getlastScoreUpdateAt()->format('Y-m-d\TH:i:s\Z'),
+            'last_event_update_at' => !empty($this->getLastEventUpdateAt()) ? $this->getLastEventUpdateAt()->format('Y-m-d\TH:i:s\Z') : NULL,
+            'last_score_update_at' => !empty($this->getlastScoreUpdateAt()) ? $this->getlastScoreUpdateAt()->format('Y-m-d\TH:i:s\Z') : NULL,
         ];
     }
     public function getId(): ?int
