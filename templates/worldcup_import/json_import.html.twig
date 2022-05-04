@@ -13,5 +13,21 @@
 
     {{ include('worldcup_import/_form.html.twig') }}
 
+    {% if match_exists is defined and match_exists is same as 'exists' %}
+        <div class="col-sm-12">
+            <p>
+                <a href="{{ path('app_export_data_matches') }}" target='_blank'>Worldcup Matches</a>
+            </p>
+        </div>
+    {% endif %}
+
+    {% if match_exists is defined and match_exists is same as 'exists' and team_exists is defined and team_exists is same as 'exists' %}
+        <div class="col-sm-12">
+            <p>
+                <a href="{{ path('app_export_data_teams_results') }}" target='_blank'>Worldcup Team Results</a>
+            </p>
+        </div>
+    {% endif %}
+
 </div>
 {% endblock %}

@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Form\WorldcupType;
-use App\Service\Todos\ExportServiceInterface;
-use App\Service\Todos\ImportServiceInterface;
+use App\Repository\TeamRepository;
+use App\Repository\WorldcupMatchRepository;
 use App\Service\Worldcup\Matches\MExportContent;
 use App\Service\Worldcup\Matches\MImportContent;
 use App\Service\Worldcup\Results\RExportContent;
@@ -14,11 +14,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ImportDataController extends AbstractController
+class ImportWorldcupDataController extends AbstractController
 {
-    #[Route('/worldcup', name: 'app_import_data_imports')]
+    #[Route('/', name: 'app_import_data_imports')]
     public function imports(
-        Request $request,
+        Request $request, WorldcupMatchRepository $worldcupMatchRepository, TeamRepository $teamRepository,
         TImportContent $teamImportJsonContent, MImportContent $matchImportContent
         ): Response
     {
@@ -34,11 +34,21 @@ class ImportDataController extends AbstractController
             $urlMatches = "http://worldcup.sfg.io/matches";
             $importMatches = $matchImportContent->execute($urlMatches);
 
-            return $this->redirectToRoute('app_export_data_teams_results');
+            // return $this->redirectToRoute('app_export_data_teams_results');
+        }
+
+        $matchExists = $teamExists = 'not';
+        if (!empty($worldcupMatchRepository->findAll())) {
+            $matchExists = 'exists';
+        }
+        if (!empty($teamRepository->findAll())) {
+            $teamExists = 'exists';
         }
 
         return $this->renderForm('worldcup_import/json_import.html.twig', [
             'form' => $form,
+            'match_exists' => $matchExists,
+            'team_exists' => $teamExists,
         ]);
     }
 
@@ -58,23 +68,6 @@ class ImportDataController extends AbstractController
     public function matches(MExportContent $exportJsonContent): Response
     {
         $json = $exportJsonContent->execute('weather_temp_celsius', 'ASC');
-
-        $response = new Response();
-        $response->setContent($json);
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
-    }
-
-    #[Route('/', name: 'app_import_data_todos')]
-    public function todos(ImportServiceInterface $importJsonContent, ExportServiceInterface $exportJsonContent): Response
-    {
-        $url = "https://jsonplaceholder.typicode.com/todos";
-
-        $messageArray = [];
-        $importToDos = $importJsonContent->execute($url, $messageArray);
-
-        $json = $exportJsonContent->execute('title', 'ASC');
 
         $response = new Response();
         $response->setContent($json);
