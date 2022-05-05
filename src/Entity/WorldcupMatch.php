@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 
 #[ORM\Entity(repositoryClass: WorldcupMatchRepository::class)]
+#[ORM\Index(fields: ["winner"])]
 class WorldcupMatch implements JsonSerializable
 {
     #[ORM\Id]
