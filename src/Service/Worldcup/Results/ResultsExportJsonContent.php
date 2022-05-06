@@ -3,10 +3,10 @@
 namespace App\Service\Worldcup\Results;
 
 use App\Repository\TeamRepository;
-use App\Repository\ToDosRepository;
+use App\Service\Worldcup\WorldcupExportServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ResultsExportJsonContent
+class ResultsExportJsonContent implements WorldcupExportServiceInterface
 {
   protected $entityManager;
 

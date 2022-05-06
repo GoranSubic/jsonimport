@@ -2,11 +2,11 @@
 
 namespace App\Service\Worldcup\Matches;
 
-use App\Repository\ToDosRepository;
 use App\Repository\WorldcupMatchRepository;
+use App\Service\Worldcup\WorldcupExportServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class MatchesExportJsonContent
+class MatchesExportJsonContent implements WorldcupExportServiceInterface
 {
   protected $entityManager;
 
@@ -18,7 +18,7 @@ class MatchesExportJsonContent
     $this->worldcupMatchRepository = $worldcupMatchRepository;
   }
   
-  public function execute(string $orderBy = 'id', string $direction = 'ASC'): string
+  public function execute(string $orderBy = 'id', string $direction = 'DESC'): string
   {
     if ($orderBy != 'weather_temp_celsius') {
       $allMatches = $this->worldcupMatchRepository->findBy([], [$orderBy => $direction]);

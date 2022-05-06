@@ -8,9 +8,10 @@ use App\Entity\Weather;
 use App\Entity\WorldcupMatch;
 use App\Repository\TeamEventRepository;
 use App\Repository\WorldcupMatchRepository;
+use App\Service\Worldcup\WorldcupImportServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class MatchesImportJsonContent
+class MatchesImportJsonContent implements WorldcupImportServiceInterface
 {
   protected $entityManager;
 

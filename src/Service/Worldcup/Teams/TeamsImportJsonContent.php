@@ -2,9 +2,10 @@
 
 namespace App\Service\Worldcup\Teams;
 
+use App\Service\Worldcup\WorldcupImportServiceInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class TeamsImportJsonContent
+class TeamsImportJsonContent implements WorldcupImportServiceInterface
 {
   protected $entityManager;
 

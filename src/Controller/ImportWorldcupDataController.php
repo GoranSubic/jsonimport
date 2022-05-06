@@ -67,7 +67,7 @@ class ImportWorldcupDataController extends AbstractController
     #[Route('/worldcup/matches', name: 'app_export_data_matches')]
     public function matches(MExportContent $exportJsonContent): Response
     {
-        $json = $exportJsonContent->execute('weather_temp_celsius', 'ASC');
+        $json = $exportJsonContent->execute('weather_temp_celsius', 'DESC');
 
         $response = new Response();
         $response->setContent($json);
